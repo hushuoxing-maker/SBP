@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>古月智能体AI｜IP提示词生成器</title>
+
+<style>
+body{
+  font-family:"Microsoft YaHei";
+  background: linear-gradient(135deg,#0a0a0a,#1a1a2e);
+  color:#fff;
+  margin:0;
+}
+
+.header{
+  padding:15px 30px;
+  background:rgba(255,255,255,0.05);
+  font-weight:bold;
+}
+
+.container{
+  padding:30px;
+}
+
+input{
+  padding:10px;
+  margin:5px;
+  border:none;
+  border-radius:6px;
+  background:#111;
+  color:#fff;
+}
+
+button{
+  padding:10px 16px;
+  border:none;
+  border-radius:6px;
+  background:linear-gradient(135deg,#00f0ff,#8a2be2);
+  color:#fff;
+  cursor:pointer;
+  margin:5px;
+}
+
+.card{
+  background:rgba(255,255,255,0.05);
+  padding:15px;
+  border-radius:10px;
+  margin-top:10px;
+  position:relative;
+}
+
+.copy{
+  position:absolute;
+  right:10px;
+  top:10px;
+  background:#222;
+  padding:5px 10px;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:12px;
+}
+
+.copy:hover{
+  background:#444;
+}
+
+textarea{
+  width:100%;
+  height:150px;
+  background:#111;
+  color:#0ff;
+  border:none;
+  margin-top:10px;
+  border-radius:6px;
+  padding:10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="header">古月智能体AI｜IP提示词生成器</div>
+
+<div class="container">
+
+<input id="name" placeholder="IP名称">
+<input id="industry" placeholder="行业">
+<input id="city" placeholder="地域">
+
+<br>
+
+<button onclick="generate()">生成10组提示词</button>
+<button onclick="copyAll()">一键复制全部</button>
+
+<div id="output"></div>
+
+</div>
+
+<script>
+
+const 配色 = ["蓝紫霓虹","粉蓝渐变","青绿科技","橙紫对比"];
+const 配件 = ["耳机+胸章","项圈+耳机","胸章+手环"];
+const 细节 = ["电路纹理","流光线条","数字粒子"];
+
+let allText = "";
+
+function random(arr){
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function generate(){
+
+  let name = document.getElementById("name").value.trim();
+  let industry = document.getElementById("industry").value.trim();
+  let city = document.getElementById("city").value.trim();
+
+  if(!name || !industry || !city){
+    alert("请填写完整信息");
+    return;
+  }
+
+  let html = "";
+  allText = "";
+
+  for(let i=1;i<=10;i++){
+
+    let text = `【第${i}组】
+赛博朋克Q版IP角色设计，${name}，融合${industry}与${city}，
+${random(配色)}配色，
+配件：${random(配件)}，
+细节：${random(细节)}，
+
+三排三视图：
+第一排：渲染三视图
+第二排：插画三视图
+第三排：线稿三视图，
+
+8K高清`;
+
+    allText += text + "\n\n";
+
+    html += `
+    <div class="card">
+      <div class="copy" onclick="copyOne(this)">复制</div>
+      <b>第${i}组</b>
+      <textarea>${text}</textarea>
+    </div>
+    `;
+  }
+
+  document.getElementById("output").innerHTML = html;
+}
+
+/* ✅ 单个复制（新版写法，不卡浏览器） */
+function copyOne(btn){
+  let text = btn.parentElement.querySelector("textarea").value;
+
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.innerText="已复制";
+    setTimeout(()=>btn.innerText="复制",1000);
+  });
+}
+
+/* ✅ 一键复制全部 */
+function copyAll(){
+  if(!allText){
+    alert("请先生成提示词");
+    return;
+  }
+
+  navigator.clipboard.writeText(allText).then(()=>{
+    alert("已复制全部提示词");
+  });
+}
+
+</script>
+
+</body>
+</html>
