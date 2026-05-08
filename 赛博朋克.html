@@ -1,135 +1,345 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-<meta charset="UTF-8">
-<title>古月智能体AI｜IP提示词生成器</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>古月智能体AI｜IP提示词生成器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
 
-<style>
-body{
-  font-family:"Microsoft YaHei";
-  background: linear-gradient(135deg,#0a0a0a,#1a1a2e);
-  color:#fff;
-  margin:0;
-}
+        body {
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
 
-.header{
-  padding:15px 30px;
-  background:rgba(255,255,255,0.05);
-  font-weight:bold;
-}
+        .header {
+            padding: 20px 30px;
+            background: rgba(0, 240, 255, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+            font-weight: 800;
+            font-size: 20px;
+            letter-spacing: 2px;
+            text-align: center;
+            background: linear-gradient(90deg, #00f0ff, #8a2be2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
+            border-radius: 12px;
+        }
 
-.container{
-  padding:30px;
-}
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
 
-input{
-  padding:10px;
-  margin:5px;
-  border:none;
-  border-radius:6px;
-  background:#111;
-  color:#fff;
-}
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
 
-button{
-  padding:10px 16px;
-  border:none;
-  border-radius:6px;
-  background:linear-gradient(135deg,#00f0ff,#8a2be2);
-  color:#fff;
-  cursor:pointer;
-  margin:5px;
-}
+        .row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
 
-.card{
-  background:rgba(255,255,255,0.05);
-  padding:15px;
-  border-radius:10px;
-  margin-top:10px;
-  position:relative;
-}
+        .row input {
+            flex: 1;
+            min-width: 180px;
+        }
 
-.copy{
-  position:absolute;
-  right:10px;
-  top:10px;
-  background:#222;
-  padding:5px 10px;
-  border-radius:6px;
-  cursor:pointer;
-  font-size:12px;
-}
+        input {
+            padding: 14px 18px;
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            outline: none;
+            backdrop-filter: blur(5px);
+        }
 
-.copy:hover{
-  background:#444;
-}
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
 
-textarea{
-  width:100%;
-  height:150px;
-  background:#111;
-  color:#0ff;
-  border:none;
-  margin-top:10px;
-  border-radius:6px;
-  padding:10px;
-}
-</style>
+        input:focus {
+            border-color: #00f0ff;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+            background: rgba(0, 0, 0, 0.7);
+        }
 
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, #00f0ff, #8a2be2);
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 240, 255, 0.4);
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 240, 255, 0.6);
+        }
+
+        .btn-copy-all {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #00f0ff;
+        }
+
+        .btn-copy-all:hover {
+            background: rgba(0, 240, 255, 0.15);
+            border-color: #00f0ff;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            animation: fadeInUp 0.3s ease forwards;
+            opacity: 0;
+            transform: translateY(10px);
+            position: relative;
+            transition: border 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(0, 240, 255, 0.4);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #00f0ff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-btn {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            background: rgba(0, 240, 255, 0.15);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: #00f0ff;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .copy-btn:hover {
+            background: rgba(0, 240, 255, 0.3);
+            border-color: #00f0ff;
+        }
+
+        .copy-btn.copied {
+            background: #00c9a7;
+            border-color: #00c9a7;
+            color: #000;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 12px;
+            color: #e0f0ff;
+            font-size: 14px;
+            padding: 14px;
+            resize: vertical;
+            line-height: 1.6;
+            backdrop-filter: blur(5px);
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            border-color: #00f0ff;
+        }
+
+        .toast {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #00c9a7;
+            color: #000;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 700;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            animation: toastAnim 2s ease forwards;
+            pointer-events: none;
+        }
+
+        @keyframes toastAnim {
+            0% { opacity: 0; top: 20px; }
+            15% { opacity: 1; top: 30px; }
+            85% { opacity: 1; top: 30px; }
+            100% { opacity: 0; top: 0; }
+        }
+
+        .empty-msg {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 15px;
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="header">古月智能体AI｜IP提示词生成器</div>
+    <div class="header">古月智能体AI｜IP提示词生成器</div>
 
-<div class="container">
+    <div class="container">
+        <div class="input-group">
+            <div class="row">
+                <input id="name" placeholder="IP名称（例如：星链猫）">
+                <input id="industry" placeholder="行业（例如：互联网科技）">
+                <input id="city" placeholder="地域（例如：重庆）">
+            </div>
+            <input id="textLock" placeholder="🔒 TEXT LOCK（锁定文本，将原样添加到每条提示词）">
+        </div>
 
-<input id="name" placeholder="IP名称">
-<input id="industry" placeholder="行业">
-<input id="city" placeholder="地域">
+        <div class="btn-row">
+            <button class="btn-generate" onclick="generate()">✨ 生成10组提示词</button>
+            <button class="btn-copy-all" onclick="copyAll()">📋 一键复制全部</button>
+        </div>
 
-<br>
+        <div id="output">
+            <div class="empty-msg">👆 填写信息后点击生成，将显示10组不重复的赛博朋克IP提示词</div>
+        </div>
+    </div>
 
-<button onclick="generate()">生成10组提示词</button>
-<button onclick="copyAll()">一键复制全部</button>
+    <script>
+        // ========== 数据池 ==========
+        const 配色 = ["蓝紫霓虹", "粉蓝渐变", "青绿科技", "橙紫对比"];
+        const 配件 = ["耳机+胸章", "项圈+耳机", "胸章+手环"];
+        const 细节 = ["电路纹理", "流光线条", "数字粒子"];
 
-<div id="output"></div>
+        // 存储全部文本，用于一键复制
+        let allText = "";
 
-</div>
+        function random(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
 
-<script>
+        // 重新洗牌数组
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
 
-const 配色 = ["蓝紫霓虹","粉蓝渐变","青绿科技","橙紫对比"];
-const 配件 = ["耳机+胸章","项圈+耳机","胸章+手环"];
-const 细节 = ["电路纹理","流光线条","数字粒子"];
+        // 生成不重复的10组组合（配色+配件+细节指纹）
+        function generateUniqueGroups(count) {
+            const groups = [];
+            const usedFingerprints = new Set();
 
-let allText = "";
+            // 所有可能组合数量 = 4*3*3 = 36，足够10组
+            const maxAttempts = 100;
+            for (let i = 0; i < count; i++) {
+                let attempts = 0;
+                let color, acc, detail, fingerprint;
+                do {
+                    color = random(配色);
+                    acc = random(配件);
+                    detail = random(细节);
+                    fingerprint = `${color}|${acc}|${detail}`;
+                    attempts++;
+                    if (attempts > maxAttempts) break; // 防止死循环，理论上不会
+                } while (usedFingerprints.has(fingerprint));
 
-function random(arr){
-  return arr[Math.floor(Math.random()*arr.length)];
-}
+                usedFingerprints.add(fingerprint);
+                groups.push({ color, acc, detail });
+            }
+            return groups;
+        }
 
-function generate(){
+        function generate() {
+            const name = document.getElementById("name").value.trim();
+            const industry = document.getElementById("industry").value.trim();
+            const city = document.getElementById("city").value.trim();
+            const textLock = document.getElementById("textLock").value; // 保持原样，不加 trim
 
-  let name = document.getElementById("name").value.trim();
-  let industry = document.getElementById("industry").value.trim();
-  let city = document.getElementById("city").value.trim();
+            if (!name || !industry || !city) {
+                showToast("⚠️ 请填写 IP名称、行业 和 地域");
+                return;
+            }
 
-  if(!name || !industry || !city){
-    alert("请填写完整信息");
-    return;
-  }
+            const groups = generateUniqueGroups(10);
+            let html = "";
+            allText = "";
 
-  let html = "";
-  allText = "";
-
-  for(let i=1;i<=10;i++){
-
-    let text = `【第${i}组】
+            groups.forEach((group, idx) => {
+                const i = idx + 1;
+                let promptText = `【第${i}组】
 赛博朋克Q版IP角色设计，${name}，融合${industry}与${city}，
-${random(配色)}配色，
-配件：${random(配件)}，
-细节：${random(细节)}，
+${group.color}配色，
+配件：${group.acc}，
+细节：${group.detail}，
 
 三排三视图：
 第一排：渲染三视图
@@ -138,43 +348,78 @@ ${random(配色)}配色，
 
 8K高清`;
 
-    allText += text + "\n\n";
+                // 追加 TEXT LOCK（如果存在）
+                if (textLock && textLock.trim() !== "") {
+                    promptText += `\n\n【TEXT LOCK】\n${textLock}`;
+                }
 
-    html += `
-    <div class="card">
-      <div class="copy" onclick="copyOne(this)">复制</div>
-      <b>第${i}组</b>
-      <textarea>${text}</textarea>
-    </div>
-    `;
-  }
+                allText += promptText + "\n\n";
 
-  document.getElementById("output").innerHTML = html;
-}
+                html += `
+                <div class="card" style="animation-delay:${idx * 0.05}s">
+                    <div class="card-title">
+                        第${i}组
+                        <span style="font-size:12px; background:rgba(138,43,226,0.3); padding:2px 8px; border-radius:20px;">${group.color}</span>
+                    </div>
+                    <div class="copy-btn" onclick="copyOne(this, event)">📋 复制</div>
+                    <textarea readonly>${promptText}</textarea>
+                </div>
+                `;
+            });
 
-/* ✅ 单个复制（新版写法，不卡浏览器） */
-function copyOne(btn){
-  let text = btn.parentElement.querySelector("textarea").value;
+            document.getElementById("output").innerHTML = html;
+            showToast(`✅ 已生成 10 组不重复提示词`);
+        }
 
-  navigator.clipboard.writeText(text).then(()=>{
-    btn.innerText="已复制";
-    setTimeout(()=>btn.innerText="复制",1000);
-  });
-}
+        // 单条复制
+        function copyOne(btn, event) {
+            event.stopPropagation();
+            const textarea = btn.parentElement.querySelector("textarea");
+            const text = textarea.value;
 
-/* ✅ 一键复制全部 */
-function copyAll(){
-  if(!allText){
-    alert("请先生成提示词");
-    return;
-  }
+            navigator.clipboard.writeText(text).then(() => {
+                btn.classList.add("copied");
+                btn.innerText = "✅ 已复制";
+                setTimeout(() => {
+                    btn.classList.remove("copied");
+                    btn.innerText = "📋 复制";
+                }, 1500);
+            }).catch(() => {
+                showToast("⚠️ 复制失败，请手动复制");
+            });
+        }
 
-  navigator.clipboard.writeText(allText).then(()=>{
-    alert("已复制全部提示词");
-  });
-}
+        // 一键复制全部
+        function copyAll() {
+            if (!allText) {
+                showToast("⚠️ 请先生成提示词");
+                return;
+            }
+            navigator.clipboard.writeText(allText).then(() => {
+                showToast("📋 已复制全部10组提示词到剪贴板");
+            }).catch(() => {
+                showToast("⚠️ 复制失败");
+            });
+        }
 
-</script>
+        // Toast 提示
+        function showToast(msg) {
+            const existing = document.querySelector(".toast");
+            if (existing) existing.remove();
+            const toast = document.createElement("div");
+            toast.className = "toast";
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
 
+        // 回车键快捷生成
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "Enter" && document.activeElement.tagName === "INPUT") {
+                e.preventDefault();
+                generate();
+            }
+        });
+    </script>
 </body>
 </html>
